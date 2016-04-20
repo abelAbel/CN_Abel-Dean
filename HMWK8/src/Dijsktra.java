@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -19,32 +20,107 @@ public class Dijsktra {
         int totalRouter = getTotalRouter();
         System.out.println(totalRouter);
         int linkCostArray[][] = new int[totalRouter][totalRouter];
-        for (int row = 0; row < totalRouter; row++){
-            for (int col = 0; col < totalRouter; col++){
+        initializeCostArray(linkCostArray);
+
+        while (!readTopographyFile(linkCostArray)){
+            Scanner input = new Scanner(System.in);
+            System.out.println("You need to fix your file! Press \"Enter\" to continue");
+            input.nextLine();
+        }
+
+        System.out.println();
+        printArray(Arrays.deepToString(linkCostArray).split("]," ));
+
+
+        initDijsktra(linkCostArray);
+
+
+    }
+
+    private void initDijsktra(int[][] linkCostArray) {
+        int D[] = new int[linkCostArray.length]; D[0] = 0;
+        int P[] = new int[linkCostArray.length]; P[0] = -1;
+//        int N[] = new int[linkCostArray.length]; N[0] = 0;
+        ArrayList<Integer> N = new ArrayList<>(); N.add(0,0);
+        Link Y[] = new Link[linkCostArray.length];
+
+        for (int i = 1; i < linkCostArray.length; i++){
+            if(adjacent(0,i,linkCostArray)){
+                D[i] = linkCostArray[0][i]; P[i] = 0;
+            } else { D[i] = -1; P[i] = -1;}
+        }
+
+        printArray(D, P, N, Y);
+
+    }
+
+    private boolean adjacent(int x, int y, int[][] linkCostArray) {
+        return linkCostArray[x][y] > 0;
+    }
+
+    private class Link{
+        private int x;
+        private int y;
+        public Link(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+    }
+
+    private void initializeCostArray(int[][] linkCostArray) {
+        for (int row = 0; row < linkCostArray.length; row++){
+            for (int col = 0; col < linkCostArray.length; col++){
                 if(row == col){
                     linkCostArray[row][col] = 0;
                 } else linkCostArray[row][col] = -1;
             }
         }
-
         printArray(Arrays.deepToString(linkCostArray).split("]," ));
-
-
-        while (!readTopographyFile(linkCostArray)){
-            Scanner input = new Scanner(System.in);
-            System.out.println("You need to fix your file! Press \"Enter\" to continue");
-            input.next();
-            input.close();
-        }
-        System.out.println();
-        printArray(Arrays.deepToString(linkCostArray).split("]," ));
-
     }
 
-    private void printArray(String[] array) {
+    private void printArray(String [] array) {
         for ( String i : array){
             System.out.println(i);
         }
+    }
+
+    private void printArray(int [] arrayD, int [] arrayP, ArrayList <Integer> arrayN, Link [] arrayY ) {
+        System.out.print("\nN' => [ ");
+        for ( int i : arrayN){
+            System.out.print(i + " ");
+        }
+        System.out.println("]");
+
+        System.out.print("Y' => [ ");
+        for ( Link i : arrayY){
+            if(i != null) {
+                System.out.print("(" + i.getX() + ", " + i.getY() + ") ");
+            } else { System.out.print("(Empty Set) "); break; }
+        }
+        System.out.println("]");
+
+        System.out.print("D  => [ ");
+        for ( int i : arrayD){
+            System.out.print(i + " ");
+        }
+        System.out.println("]");
+
+        System.out.print("P  => [ ");
+        for ( int i : arrayP){
+            System.out.print(i + " ");
+        }
+        System.out.println("]");
+
+
+
     }
 
     private boolean readTopographyFile(int[][] linkCostArray) {
@@ -61,6 +137,7 @@ public class Dijsktra {
                     reader.close();
                     return false;
                 }
+                row++;
             }
             reader.close();
             return true;
