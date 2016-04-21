@@ -44,6 +44,7 @@ public class Dijsktra {
                 D[i] = linkCostArray[0][i]; P[i] = 0;
             } else { D[i] = -1; P[i] = -1;}
         }
+        System.out.print("\nInitialization:");
         printArray(D, P, N, Y);
         continueDijsktra(D, P, N, Y, linkCostArray);
     }
@@ -53,12 +54,24 @@ public class Dijsktra {
         while(n.size() != linkCostArray.length){
             k = minimumD(d,n);
             n.add(k);
-            Link l = new Link(p[k],k);
-            y.add(l);
-            System.out.println("Node: " + k + " Value: " + d[k] );
+            y.add(new Link(p[k],k));
             System.out.println();
+            System.out.print("Node: " + k + " Value: " + d[k] );
             printArray(d, p, n, y);
-            break;
+
+            System.out.print("Children's of [" + k + "] -> ");
+            for (int i = 1; i< linkCostArray.length ; i++){
+                if (!notInN(i, n)){
+                    if (adjacent(k,i,linkCostArray)){
+                        System.out.print(i + " ");
+                        if(d[k] + linkCostArray[k][i] < d[i] || d[i] == -1){
+                            d[i] = d[k] + linkCostArray[k][i]; p[i] = k;
+                        }
+                    }
+                }
+            }
+
+            printArray(d, p, n, y);
         }
     }
 
@@ -128,27 +141,27 @@ public class Dijsktra {
     }
 
     private void printArray(int [] arrayD, int [] arrayP, ArrayList <Integer> arrayN, ArrayList<Link> arrayY ) {
-        System.out.print("\nN' => [ ");
+        System.out.print("\n\tN' => [ ");
         for ( int i : arrayN){
             System.out.print(i + " ");
         }
         System.out.println("]");
 
-        System.out.print("Y' => [ ");
-        for ( Link i : arrayY){
-            if(i != null) {
+        System.out.print("\tY' => [ ");
+        if(arrayY.size() != 0) {
+            for ( Link i : arrayY){
                 System.out.print("(" + i.getX() + ", " + i.getY() + ") ");
-            } else { System.out.print("(Empty Set) "); break; }
-        }
+            }
+        } else { System.out.print("(Empty Set) "); }
         System.out.println("]");
 
-        System.out.print("D  => [ ");
+        System.out.print("\tD  => [ ");
         for ( int i : arrayD){
             System.out.print(i + " ");
         }
         System.out.println("]");
 
-        System.out.print("P  => [ ");
+        System.out.print("\tP  => [ ");
         for ( int i : arrayP){
             System.out.print(i + " ");
         }
