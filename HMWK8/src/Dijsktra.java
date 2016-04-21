@@ -11,6 +11,7 @@ import java.util.*;
  * using the dijsktras algorithm. It reads the nodes and link cost from a file
  * and asks the user for the amount of totals nodes. Once its read in the file it
  * performs dijsktras algorithm.
+ * Algorithm provided by Dr. Zhu
  */
 public class Dijsktra {
     public static void main(String[] args) {
