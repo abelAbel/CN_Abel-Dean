@@ -256,13 +256,13 @@ public class Dijsktra {
         } else { System.out.print("(Empty Set) "); }
         System.out.println("]");
 
-        System.out.print("\tD  => [ ");
+        System.out.print("\tD => [ ");
         for ( int i : arrayD){
             System.out.print("V"+i + " ");
         }
         System.out.println("]");
 
-        System.out.print("\tP  => [ ");
+        System.out.print("\tP => [ ");
         for ( int i : arrayP){
             System.out.print("V" + i + " ");
         }
