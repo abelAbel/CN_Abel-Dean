@@ -243,27 +243,27 @@ public class Dijsktra {
     private void printArray(int [] arrayD, int [] arrayP, ArrayList <Integer> arrayN, ArrayList<Link> arrayY ) {
         System.out.print("\n\tN' => [ ");
         for ( int i : arrayN){
-            System.out.print(i + " ");
+            System.out.print("V"+i + " ");
         }
         System.out.println("]");
 
         System.out.print("\tY' => [ ");
         if(arrayY.size() != 0) {
             for ( Link i : arrayY){
-                System.out.print("(" + i.getX() + ", " + i.getY() + ") ");
+                System.out.print("(" + "V"+ i.getX() + ", V" + i.getY() + ") ");
             }
         } else { System.out.print("(Empty Set) "); }
         System.out.println("]");
 
-        System.out.print("\tD  => [ ");
+        System.out.print("\tD => [ ");
         for ( int i : arrayD){
-            System.out.print(i + " ");
+            System.out.print("V"+i + " ");
         }
         System.out.println("]");
 
-        System.out.print("\tP  => [ ");
+        System.out.print("\tP => [ ");
         for ( int i : arrayP){
-            System.out.print(i + " ");
+            System.out.print("V" + i + " ");
         }
         System.out.println("]");
 
