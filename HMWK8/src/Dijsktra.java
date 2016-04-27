@@ -225,7 +225,7 @@ public class Dijsktra {
     }
 
     /**
-     * This print array prints a single array
+     * This print array prints a single array.
      * @param array
      */
     private void printArray(String [] array) {
@@ -244,27 +244,27 @@ public class Dijsktra {
     private void printArray(int [] arrayD, int [] arrayP, ArrayList <Integer> arrayN, ArrayList<Link> arrayY ) {
         System.out.print("\n\tN' => [ ");
         for ( int i : arrayN){
-            System.out.print("V"+i + " ");
+            System.out.print(i + " ");
         }
         System.out.println("]");
 
         System.out.print("\tY' => [ ");
         if(arrayY.size() != 0) {
             for ( Link i : arrayY){
-                System.out.print("(" + "V"+ i.getX() + ", V" + i.getY() + ") ");
+                System.out.print("(" + i.getX() + ", " + i.getY() + ") ");
             }
         } else { System.out.print("(Empty Set) "); }
         System.out.println("]");
 
         System.out.print("\tD => [ ");
         for ( int i : arrayD){
-            System.out.print("V"+i + " ");
+            System.out.print(i + " ");
         }
         System.out.println("]");
 
         System.out.print("\tP => [ ");
         for ( int i : arrayP){
-            System.out.print("V" + i + " ");
+            System.out.print(i + " ");
         }
         System.out.println("]");
 
