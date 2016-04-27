@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -17,20 +18,16 @@ public class DistanceVector {
         start.initDistanceVector();
     }
 
-
+    //TODO ADD THE V's TO THE PRINTING BECAUSE YOU LOST POINTS LAST TIME
     private void initDistanceVector() {
         totalRouter = getTotalRouter();
         D0 = new int[totalRouter];
         L0 = new int[totalRouter];
         readFileCaller("HMWK9/cost.txt");
-//        while(!readNeighborCost()) {
-//            Scanner input = new Scanner(System.in);
-//            System.out.println("You need to fix your file! Press \"Enter\" to continue");
-//            input.nextLine();
-//        }
-        
-//        readSourceVectors();
-        System.out.println(neighborNodeCostDictionary.toString());
+        readFileCaller("HMWK9/source_vectors.txt");
+        System.out.println("Cost: " + neighborNodeCostDictionary.toString());
+        System.out.println("D0: " + Arrays.toString(D0));
+        System.out.println("L0: " + Arrays.toString(L0));
     }
 
     private void readFileCaller(String file){
@@ -54,11 +51,11 @@ public class DistanceVector {
                                 line = reader.readLine();
                             }
                         }
-                        System.out.println(line);
                         row++;
                         break;
                     case "HMWK9/source_vectors.txt":
-//                        readFiles(file);
+                        D0 = splitForIntegers(line.split(" "));
+                        L0 = splitForIntegers(reader.readLine().split(" "));
                         break;
                     case "HMWK9/neighbor_vectos.txt":
 //                        readFiles(file);
@@ -74,6 +71,18 @@ public class DistanceVector {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    private int[] splitForIntegers(String[] lineSplitted) {
+        int[] temp = new int[lineSplitted.length];
+        for(int i = 0; i < lineSplitted.length; i++){
+            temp[i] = Integer.parseInt(lineSplitted[i]);
+        }
+        return temp;
+    }
+
+    private void sourceVectorCreator(String line) {
 
     }
 
