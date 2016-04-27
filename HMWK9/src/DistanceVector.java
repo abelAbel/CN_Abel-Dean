@@ -3,6 +3,11 @@
  */
 public class DistanceVector {
     public static void main(String[] args) {
+        DistanceVector start = new DistanceVector();
+        start.initDistanceVector();
+    }
 
+    private void initDistanceVector() {
+        System.out.println("yo abel");
     }
 }
