@@ -36,7 +36,6 @@ public class DistanceVector {
         try {
             fileStream = new FileInputStream(file);
             reader = new BufferedReader((new InputStreamReader(fileStream)));
-//            reader = new BufferedReader(new FileReader(file)); //MAKE SURE TO CHANGE THIS
             String line;
             int row = 0;
             while ((line = reader.readLine()) != null) {
@@ -58,7 +57,6 @@ public class DistanceVector {
                         L0 = splitForIntegers(reader.readLine().split(" "));
                         break;
                     case "HMWK9/neighbor_vectos.txt":
-//                        readFiles(file);
                         break;
                 }
             }
@@ -82,11 +80,6 @@ public class DistanceVector {
         return temp;
     }
 
-    private void sourceVectorCreator(String line) {
-
-    }
-
-
     private boolean readNeighborCost(String line, int row) {
         String [] linkLineCost = line.split(" ");
         int neighboringNode = Integer.parseInt(linkLineCost[0]);
@@ -94,7 +87,6 @@ public class DistanceVector {
 
         if(neighboringNode >= 1 && neighboringNode <= totalRouter-1 && neighborLinkedCost > 0){
             neighborNodeCostDictionary.put(neighboringNode,neighborLinkedCost);
-//            System.out.println("neigh:" + neighboringNode + "cost:" + neighborLinkedCost);
             return true;
         } else {
             System.out.println("!! ERROR ON ROW: " + row + " !!");
@@ -104,7 +96,6 @@ public class DistanceVector {
 
     /**
      * This method asks the users for the total number of routers
-     *
      * @return
      */
     public int getTotalRouter() {
