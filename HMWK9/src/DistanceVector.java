@@ -8,6 +8,6 @@ public class DistanceVector {
     }
 
     private void initDistanceVector() {
-        System.out.println("yo abel");
+        /*Testing*/ System.out.println("yo abel");
     }
 }
