@@ -1,14 +1,15 @@
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Created by Dean on 4/27/2016.
  */
 public class DistanceVector {
+    private Scanner keyboard = new Scanner(System.in);
     private int totalRouter = 0;
     private HashMap<Integer, Integer> neighborNodeCostDictionary = new HashMap<>();
+    private HashMap<Integer, int[]> neighborDistanceVectors = new HashMap<>();
     private int D0[];
     private int L0[];
 
@@ -22,14 +23,153 @@ public class DistanceVector {
         totalRouter = getTotalRouter();
         D0 = new int[totalRouter];
         L0 = new int[totalRouter];
-        readFileCaller("HMWK9/cost.txt");
-        readFileCaller("HMWK9/source_vectors.txt");
+        readFileCaller("cost.txt");
+        readFileCaller("source_vectors.txt");
+        readFileCaller("neighbor_vectors.txt");
+
+        printsAll();
+        String finish = "Y";
+        while (finish.equalsIgnoreCase("Y")) {
+            switch (askUserForEvent()) {
+                case 1:
+                    promptForEvent1();
+                    break;
+                case 2:
+                    String f = "Y";
+                    while (f.equalsIgnoreCase("Y")) {
+                        promptForEvent2();
+                        System.out.println("Do you want to change another Distance Vector? (Y/N)");
+                        f = keyboard.nextLine();
+                    }
+                    break;
+                default:
+                    System.out.println("You've inputted a wrong Event, has to be 1 or 2. Exiting....");
+                    System.exit(1);
+            }
+            printsAll();
+            notifyChildNode(distanceVectorAlgo());
+
+            System.out.println("Do you want to do another event (Y/N)?");
+            finish = keyboard.nextLine();
+        }
+
+    }
+
+    private void notifyChildNode(boolean notify) {
+        System.out.println();
+        if (!notify) {
+            System.out.printf("There is no need to notify any neighbor! {%s}\n", neighborNodeCostDictionary.keySet());
+            printD0andL0();
+        } else {
+            System.out.printf("List of neighbors to be notified:! {%s}\n", neighborNodeCostDictionary.keySet());
+            printD0andL0();
+        }
+    }
+
+    private boolean distanceVectorAlgo() {
+        int temp [] = new int[totalRouter];temp[0] = 0;
+
+        for (int j = 1; j < totalRouter; j++ ){
+            Map<Integer, Integer> minFinderMap = new TreeMap<>();
+            for(int x : neighborNodeCostDictionary.keySet()){
+                minFinderMap.put(neighborNodeCostDictionary.get(x)+ neighborDistanceVectors.get(x)[j], x);
+            }
+            for (int i : minFinderMap.keySet()){
+                temp[j] = i;
+                L0[j] = minFinderMap.get(i);
+                break;
+            }
+        }
+
+        if(Arrays.equals(D0,temp)){
+            return false;
+        } else {D0 = temp; return true;}
+
+    }
+
+    private void promptForEvent2() {
+        System.out.println("Input the index of V0's neighboring router which the distance vector message is received (Neighbor index(" +
+                neighborNodeCostDictionary.keySet() + ")): ");
+        int neighborNode;
+        while (!userInputChangeValidation(neighborNode = Integer.parseInt(keyboard.nextLine()), 1)) {
+            System.out.print("You've inputted an invalid neighboring router! Please input a valid index: ");
+        }
+
+        int[] temp = neighborDistanceVectors.get(neighborNode);
+        System.out.println("Distance vector of V" + neighborNode);
+        for (int i = 0; i < totalRouter; i++) {
+            if (temp[i] != 0) {
+                System.out.println("Do you want to change D" + neighborNode + "(" + i + ") = " + temp[i] + " (Input 0 for NO or enter value)?");
+                int change = Integer.parseInt(keyboard.nextLine());
+                while (change < 0) {
+                    System.out.print("Input needs to be greater then 0 or 0 for original. Try again -> ");
+                    change = Integer.parseInt(keyboard.nextLine());
+                }
+                temp[i] = (change == 0) ? temp[i] : change;
+            }
+
+        }
+
+
+    }
+
+
+    private void promptForEvent1() {
+        String finish = "";
+        while (!finish.equalsIgnoreCase("N")) {
+            System.out.println("Input the index of V0's neighboring router you want to modify (Neighbor index(" +
+                    neighborNodeCostDictionary.keySet() + ")): ");
+            int neighborNodeChosen = Integer.parseInt(keyboard.nextLine());
+            System.out.println("Input the new link cost for neighboring router(" + neighborNodeChosen + ")");
+            int cost = Integer.parseInt(keyboard.nextLine());
+            if (!userInputChangeValidation(neighborNodeChosen, cost)) {
+                System.out.println("You've inputted an invalid neighboring router or node change needs to be greater then 0!");
+
+            } else {
+                System.out.println("Do you want to make anymore changes (Y/N)? ");
+                finish = keyboard.nextLine();
+            }
+        }
+    }
+
+    private boolean userInputChangeValidation(int neighborNodeChosen, int i) {
+        if (!neighborNodeCostDictionary.containsKey(neighborNodeChosen)) {
+            return false;
+        } else if (i <= 0) {
+            return false;
+        }
+        neighborNodeCostDictionary.put(neighborNodeChosen, i);
+        return true;
+    }
+
+    private int askUserForEvent() {
+        System.out.println("\nSelect one of following Events:");
+        System.out.println("Enter '1' (Event 1: A change in local link cost to a neighbor of router V0)");
+        System.out.println("Enter '2' (Event 2: Receiving a distance vector message from a neighbor of router V0)");
+        return Integer.parseInt(keyboard.nextLine());
+    }
+
+    private void printsAll() {
         System.out.println("Cost: " + neighborNodeCostDictionary.toString());
-        System.out.println("D0: " + Arrays.toString(D0));
+        printD0andL0();
+        System.out.println("\nNeighbor Distance Vector: ");
+        printArraysOfDictionaries();
+    }
+
+    private void printD0andL0() {
+        System.out.println("DO: " + Arrays.toString(D0));
         System.out.println("L0: " + Arrays.toString(L0));
     }
 
-    private void readFileCaller(String file){
+
+    private void printArraysOfDictionaries() {
+        for (int i : neighborDistanceVectors.keySet()) {
+            System.out.print("D" + i + " -> ");
+            System.out.println(Arrays.toString(neighborDistanceVectors.get(i)));
+        }
+    }
+
+    private void readFileCaller(String file) {
         BufferedReader reader = null;
         FileInputStream fileStream = null;
         try {
@@ -38,24 +178,26 @@ public class DistanceVector {
             String line;
             int row = 0;
             while ((line = reader.readLine()) != null) {
-                switch(file){
-                    case "HMWK9/cost.txt":
-                        while(!readNeighborCost(line,row)) {
+                switch (file) {
+                    case "cost.txt":
+                        while (!readNeighborCost(line, row)) {
                             fileStream.getChannel().position(0);
                             Scanner input = new Scanner(System.in);
                             System.out.println("You need to fix your file! Press \"Enter\" to continue");
                             input.nextLine();
-                            for(int i = 0; i < row+1; i++){
+                            for (int i = 0; i < row + 1; i++) {
                                 line = reader.readLine();
                             }
                         }
                         row++;
                         break;
-                    case "HMWK9/source_vectors.txt":
+                    case "source_vectors.txt":
                         D0 = splitForIntegers(line.split(" "));
                         L0 = splitForIntegers(reader.readLine().split(" "));
                         break;
-                    case "HMWK9/neighbor_vectos.txt":
+                    case "neighbor_vectors.txt":
+                        int temp[] = splitForIntegers(line.split(" "));
+                        neighborDistanceVectors.put(temp[0], Arrays.copyOfRange(temp, 1, temp.length));
                         break;
                 }
             }
@@ -73,19 +215,19 @@ public class DistanceVector {
 
     private int[] splitForIntegers(String[] lineSplitted) {
         int[] temp = new int[lineSplitted.length];
-        for(int i = 0; i < lineSplitted.length; i++){
+        for (int i = 0; i < lineSplitted.length; i++) {
             temp[i] = Integer.parseInt(lineSplitted[i]);
         }
         return temp;
     }
 
     private boolean readNeighborCost(String line, int row) {
-        String [] linkLineCost = line.split(" ");
+        String[] linkLineCost = line.split(" ");
         int neighboringNode = Integer.parseInt(linkLineCost[0]);
         int neighborLinkedCost = Integer.parseInt(linkLineCost[1]);
 
-        if(neighboringNode >= 1 && neighboringNode <= totalRouter-1 && neighborLinkedCost > 0){
-            neighborNodeCostDictionary.put(neighboringNode,neighborLinkedCost);
+        if (neighboringNode >= 1 && neighboringNode <= totalRouter - 1 && neighborLinkedCost > 0) {
+            neighborNodeCostDictionary.put(neighboringNode, neighborLinkedCost);
             return true;
         } else {
             System.out.println("!! ERROR ON ROW: " + row + " !!");
@@ -95,18 +237,17 @@ public class DistanceVector {
 
     /**
      * This method asks the users for the total number of routers
+     *
      * @return
      */
     public int getTotalRouter() {
         int totalRouter = 0;
-        Scanner keyboard = new Scanner(System.in);
         while (totalRouter < 2) {
             System.out.println("What is the total number of routers? ( Must be >= 2)");
             try {
-                totalRouter = keyboard.nextInt();
+                totalRouter = Integer.parseInt(keyboard.nextLine());
             } catch (Exception e) {
                 System.out.println("Need to be an Integer");
-                keyboard.next(); // reset the buffer
                 totalRouter = 0;
             }
         }
