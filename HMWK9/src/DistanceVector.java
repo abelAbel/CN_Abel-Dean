@@ -3,7 +3,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 /**
- * Created by Dean on 4/27/2016.
+ * Created by Dean Bailey and Abel Amadou on 4/27/2016.
  */
 public class DistanceVector {
     private Scanner keyboard = new Scanner(System.in);
@@ -18,7 +18,6 @@ public class DistanceVector {
         start.initDistanceVector();
     }
 
-    //TODO ADD THE V's TO THE PRINTING BECAUSE YOU LOST POINTS LAST TIME
     private void initDistanceVector() {
         totalRouter = getTotalRouter();
         D0 = new int[totalRouter];
@@ -180,7 +179,7 @@ public class DistanceVector {
     private void printD0andL0() {
         System.out.print("D0: [");
         for(int i = 0; i < totalRouter; i++){
-            System.out.printf("V%d%s",D0[i], (i != totalRouter-1)? ", ":"");
+            System.out.printf("V%d = %d%s",i,D0[i], (i != totalRouter-1)? ", ":"");
         }
         System.out.println("]");
 
@@ -199,7 +198,7 @@ public class DistanceVector {
         for (int i : neighborDistanceVectors.keySet()) {
             System.out.print("D" + i + " -> [");
             for(int j = 0; j < totalRouter; j++){
-                System.out.printf("V%d%s",neighborDistanceVectors.get(i)[j], (j != totalRouter-1)? ", ":"");
+                System.out.printf("V%d = %d%s",j,neighborDistanceVectors.get(i)[j], (j != totalRouter-1)? ", ":"");
             }
             System.out.println("]");
 //            System.out.println(Arrays.toString(neighborDistanceVectors.get(i)));
