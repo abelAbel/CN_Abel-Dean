@@ -68,17 +68,26 @@ public class DistanceVector {
 
     private boolean distanceVectorAlgo() {
         int temp [] = new int[totalRouter];temp[0] = 0;
-
+        Map<Integer, Integer> minFinderMap = new TreeMap<>();
         for (int j = 1; j < totalRouter; j++ ){
-            Map<Integer, Integer> minFinderMap = new TreeMap<>();
             for(int x : neighborNodeCostDictionary.keySet()){
-                minFinderMap.put(neighborNodeCostDictionary.get(x)+ neighborDistanceVectors.get(x)[j], x);
+                int distance = neighborNodeCostDictionary.get(x)+neighborDistanceVectors.get(x)[j];
+                //System.out.println("X:" + x + ", V(x): "+neighborNodeCostDictionary.get(x)+", distance:"+distance);
+                minFinderMap.put(distance, x);
+//                System.out.println("Get->"+ minFinderMap.get(distance)+ ", Size->"+minFinderMap.size());
+
             }
-            for (int i : minFinderMap.keySet()){
-                temp[j] = i;
-                L0[j] = minFinderMap.get(i);
+//            System.out.println("j = "+j + ", Size->"+minFinderMap.size());
+//            for (int k : minFinderMap.keySet()){
+//                System.out.println("Key:"+k+", Val:"+minFinderMap.get(k));
+//            }
+            for (int k : minFinderMap.keySet()){
+//                System.out.println("GOOOD-> Key:"+k2+", Val:"+minFinderMap.get(k2));
+                temp[j] = k;
+                L0[j] = minFinderMap.get(k);
                 break;
             }
+            minFinderMap.clear();
         }
 
         if(Arrays.equals(D0,temp)){
@@ -91,7 +100,7 @@ public class DistanceVector {
         System.out.println("Input the index of V0's neighboring router which the distance vector message is received (Neighbor index(" +
                 neighborNodeCostDictionary.keySet() + ")): ");
         int neighborNode;
-        while (!userInputChangeValidation(neighborNode = Integer.parseInt(keyboard.nextLine()), 1)) {
+        while (!neighborNodeCostDictionary.containsKey(neighborNode = Integer.parseInt(keyboard.nextLine()))) {
             System.out.print("You've inputted an invalid neighboring router! Please input a valid index: ");
         }
 
@@ -150,28 +159,56 @@ public class DistanceVector {
     }
 
     private void printsAll() {
-        System.out.println("Cost: " + neighborNodeCostDictionary.toString());
+        //        System.out.println("Cost: " + neighborNodeCostDictionary.toString());
+        printC0();
         printD0andL0();
         System.out.println("\nNeighbor Distance Vector: ");
         printArraysOfDictionaries();
     }
 
+    private void printC0() {
+        //        System.out.println("Link costs to all neighbors of node V0:");
+        System.out.print("C0: [");
+        for(int i = 0; i < totalRouter; i++){
+            System.out.printf("V%d = %s%s",i,(neighborNodeCostDictionary.containsKey(i))?
+                            neighborNodeCostDictionary.get(i)+"":"-",
+                    (i != totalRouter-1)? ", ":"");
+        }
+        System.out.println("]");
+    }
+
     private void printD0andL0() {
-        System.out.println("DO: " + Arrays.toString(D0));
-        System.out.println("L0: " + Arrays.toString(L0));
+        System.out.print("D0: [");
+        for(int i = 0; i < totalRouter; i++){
+            System.out.printf("V%d%s",D0[i], (i != totalRouter-1)? ", ":"");
+        }
+        System.out.println("]");
+
+        System.out.print("L0: [");
+        for(int i = 0; i < totalRouter; i++){
+            System.out.printf("%s%s",(i==0)?"-":"(V0, V"+L0[i]+")", (i != totalRouter-1)? ", ":"");
+        }
+        System.out.println("]");
+
+//        System.out.println("DO: " + Arrays.toString(D0));
+//        System.out.println("L0: " + Arrays.toString(L0));
     }
 
 
     private void printArraysOfDictionaries() {
         for (int i : neighborDistanceVectors.keySet()) {
-            System.out.print("D" + i + " -> ");
-            System.out.println(Arrays.toString(neighborDistanceVectors.get(i)));
+            System.out.print("D" + i + " -> [");
+            for(int j = 0; j < totalRouter; j++){
+                System.out.printf("V%d%s",neighborDistanceVectors.get(i)[j], (j != totalRouter-1)? ", ":"");
+            }
+            System.out.println("]");
+//            System.out.println(Arrays.toString(neighborDistanceVectors.get(i)));
         }
     }
 
     private void readFileCaller(String file) {
         BufferedReader reader = null;
-        FileInputStream fileStream = null;
+        FileInputStream fileStream;
         try {
             fileStream = new FileInputStream(file);
             reader = new BufferedReader((new InputStreamReader(fileStream)));
