@@ -84,6 +84,7 @@ public class DistanceVector {
 //                System.out.println("GOOOD-> Key:"+k2+", Val:"+minFinderMap.get(k2));
                 temp[j] = k;
                 L0[j] = minFinderMap.get(k);
+                //                L0[j] = (neighborNodeCostDictionary.containsKey(j)&&neighborNodeCostDictionary.get(j)==k)?j:minFinderMap.get(k);
                 break;
             }
             minFinderMap.clear();
